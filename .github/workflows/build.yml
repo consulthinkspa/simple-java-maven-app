@@ -8,6 +8,7 @@ on:
 
 jobs:
   build:
+    name: Maven tasks
     runs-on:  [self-hosted, linux, maven]
     steps:
     - uses: actions/checkout@v2
@@ -24,8 +25,8 @@ jobs:
     - name: Maven - Test
       run: mvn test
 
-  sonarqube_analisys:
-    name: SonarQube Trigger
+  sonarQubeTrigger:
+    name: SonarQube analisys
     runs-on:  [self-hosted, linux, maven]
     steps:
     - uses: actions/checkout@master
