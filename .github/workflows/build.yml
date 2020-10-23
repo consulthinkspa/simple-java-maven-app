@@ -8,9 +8,7 @@ on:
 
 jobs:
   build:
-
     runs-on:  [self-hosted, linux, maven]
-
     steps:
     - uses: actions/checkout@v2
     - name: Set up JDK 1.8
@@ -26,8 +24,9 @@ jobs:
     - name: Maven - Test
       run: mvn test
 
-  sonarQubeTrigger:
+  sonarqube_analisys:
     name: SonarQube Trigger
+    runs-on:  [self-hosted, linux, maven]
     steps:
     - uses: actions/checkout@master
     - name: SonarQube Scan
