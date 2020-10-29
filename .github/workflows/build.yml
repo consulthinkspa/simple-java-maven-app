@@ -8,8 +8,8 @@ on:
 
 jobs:
   build:
-    name: Maven tasks
-    runs-on:  [self-hosted, linux, maven]
+    runs-on: [ ubuntu-20.04 ]
+    name: Continuos Integration - build, test and scan
     steps:
     - uses: actions/checkout@v2
     - name: Set up JDK 1.8
@@ -18,20 +18,33 @@ jobs:
         java-version: 1.8
         #server-id: github # Value of the distributionManagement/repository/id field of the pom.xml
         #settings-path: ${{ github.workspace }} # location for the settings.xml file
-    - name: Maven - clean workspace
+    - name: Maven - Clean
       run: mvn clean
-    - name: Maven - Build
-      run: mvn install
-    - name: Maven - Test
+    - name: Maven - verify
+      run: mvn verify
+    - name: Maven - test
       run: mvn test
-
-  sonarQubeTrigger:
-    name: SonarQube analisys
-    runs-on:  [self-hosted, linux, maven]
-    steps:
-    - uses: actions/checkout@master
-    - name: SonarQube Scan
-      uses: kitabisa/sonarqube-action@master
+    #name: Continuos Integration - generate report coverate
+    - name: Maven - generate report coverage
+      run: mvn sonar:sonar
+           -Dsonar.host.url=${{ secrets.SONARQUBE_HOST }}
+           -Dsonar.login=${{ secrets.SONARQUBE_TOKEN }}
+           #-Dsonar.projectKey=com.eldisol:jacoboot
+           #-Dsonar.projectName=jacoboot
+           #-Dsonar.projectVersion=0.0.1-SNAPSHOT
+           #-Dsonar.sources=.
+           #-Dsonar.sourceEncoding=UTF-8
+    #name: Continuos Integration - publish artifacts
+    - name: Maven - Build
+      run: mvn package
+    - name: Nexus Repo Publish
+      uses: sonatype-nexus-community/nexus-repo-github-action@master
       with:
-        host: ${{ secrets.SONARQUBE_HOST }}
-        login: ${{ secrets.SONARQUBE_TOKEN }}
+        serverUrl: ${{ secrets.NEXUS3_HOST }}
+        username: ${{ secrets.NEXUS3_USER }}
+        password: ${{ secrets.NEXUS3_PASSWORD }}
+        format: maven2
+        repository: maven-releases
+        coordinates: groupId=com.mycompany.app artifactId=my-app version=0.0.1
+        assets: extension=jar
+        filename: ./target/my-app-0.0.1.jar

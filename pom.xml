@@ -4,7 +4,7 @@
   <groupId>com.mycompany.app</groupId>
   <artifactId>my-app</artifactId>
   <packaging>jar</packaging>
-  <version>1.0-SNAPSHOT</version>
+  <version>0.0.1</version>
   <name>my-app</name>
   <url>http://maven.apache.org</url>
   <dependencies>
@@ -12,6 +12,12 @@
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
       <version>4.11</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.jacoco</groupId>
+      <artifactId>jacoco-maven-plugin</artifactId>
+      <version>0.8.6</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
@@ -31,6 +37,25 @@
             </manifest>
           </archive>
         </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.jacoco</groupId>
+      	<artifactId>jacoco-maven-plugin</artifactId>
+      	<version>0.8.6</version>
+      	<executions>
+      	  <execution>
+      	     <goals>
+      	       <goal>prepare-agent</goal>
+      	     </goals>
+      	  </execution>
+      	  <execution>
+      	    <id>report</id>
+      	    <phase>prepare-package</phase>
+      	    <goals>
+      	      <goal>report</goal>
+      	    </goals>
+      	  </execution>
+        </executions>
       </plugin>
     </plugins>
   </build>
